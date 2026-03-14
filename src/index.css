@@ -1,0 +1,117 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,900&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-paper: #FDFCF0;
+  --color-action: #FF5C00;
+  --color-info: #00E1FF;
+  
+  --font-sans: 'Space Grotesk', sans-serif;
+  --font-display: 'Fraunces', serif;
+}
+
+@layer utilities {
+  .neo-border {
+    border: 4px solid #000000;
+  }
+  .neo-shadow {
+    box-shadow: 6px 6px 0px 0px #000000;
+    transition: all 0.15s ease-in-out;
+  }
+  .neo-shadow:hover, .neo-shadow:active, .neo-shadow-active {
+    box-shadow: 0px 0px 0px 0px #000000;
+    transform: translate(6px, 6px);
+  }
+  .neo-shadow-static {
+    box-shadow: 6px 6px 0px 0px #000000;
+  }
+}
+
+body {
+  background-color: var(--color-paper);
+  color: #000000;
+  font-family: var(--font-sans);
+}
+
+@media print {
+  @page {
+    margin: 1cm;
+    size: auto;
+  }
+
+  body {
+    background-color: white !important;
+    color: black !important;
+  }
+  
+  .neo-border, .neo-shadow, .neo-shadow-static {
+    border: 1px solid #000 !important;
+    box-shadow: none !important;
+    transform: none !important;
+  }
+  
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    display: table !important;
+  }
+  
+  thead {
+    display: table-header-group !important;
+  }
+  
+  tbody {
+    display: table-row-group !important;
+  }
+  
+  tfoot {
+    display: table-footer-group !important;
+  }
+  
+  tr {
+    display: table-row !important;
+    page-break-inside: avoid !important;
+    border: none !important;
+  }
+  
+  th, td {
+    display: table-cell !important;
+    border: 1px solid #000 !important;
+    padding: 6px 8px !important;
+    font-size: 12pt !important;
+    text-align: left !important;
+  }
+  
+  .print\:hidden {
+    display: none !important;
+  }
+  
+  .md\:hidden {
+    display: none !important;
+  }
+
+  /* Make sure the text sizes are normal */
+  .text-lg, .text-xl, .text-2xl, .text-3xl {
+    font-size: 12pt !important;
+  }
+  
+  /* Remove background colors from rows */
+  .bg-paper\/50, .bg-white, .bg-paper {
+    background-color: transparent !important;
+  }
+  
+  /* Simplify the status pill */
+  .bg-green-400, .bg-red-400 {
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    font-weight: bold !important;
+    transform: none !important;
+  }
+  
+  /* Ensure text colors are visible */
+  .text-green-600, .text-red-600 {
+    color: #000 !important;
+  }
+}
