@@ -2,7 +2,7 @@
 
 A robust, offline-first Progressive Web Application (PWA) built to manage student ledgers, event payments, and financial transactions for Kathford MC. The application features seamless offline synchronization, role-based access control, and comprehensive reporting tools.
 
-## 🚀 Key Features
+## Key Features
 
 - **Offline-First PWA:** Fully functional without an internet connection. Actions are queued locally using IndexedDB and automatically synced to the server when the connection is restored.
 - **Student Management:** Add, edit, and remove students. Supports bulk importing via CSV.
@@ -12,7 +12,7 @@ A robust, offline-first Progressive Web Application (PWA) built to manage studen
 - **Role-Based Access Control (RBAC):** Restricts access to specific Kathford student emails, with designated Admin and Viewer roles.
 - **Real-time Sync:** Powered by Supabase for real-time database updates and authentication.
 
-## 🛠 Tech Stack
+## Tech Stack
 
 - **Frontend:** React 18, TypeScript, Vite
 - **Styling:** Tailwind CSS
@@ -23,7 +23,7 @@ A robust, offline-first Progressive Web Application (PWA) built to manage studen
 
 ---
 
-## 📂 Page Structure
+## Page Structure
 
 The application is structured into several intuitive modules:
 
@@ -52,7 +52,7 @@ The application is structured into several intuitive modules:
 
 ---
 
-## 💻 Installation & Setup
+## Installation & Setup
 
 ### Prerequisites
 - Node.js (v18 or higher)
@@ -95,11 +95,11 @@ npm run build
 To set up your Supabase database, run the following SQL commands in your Supabase SQL Editor.
 
 ```sql
--- Enable UUID extension
+-- Enable UUID extension for unique identifiers
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
--- 1. Students Table
-CREATE TABLE public.students (
+-- 1. Students Table: Stores student profiles and financial summaries
+CREATE TABLE IF NOT EXISTS public.students (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   name TEXT NOT NULL,
   roll_no TEXT,
@@ -110,14 +110,14 @@ CREATE TABLE public.students (
   balances JSONB DEFAULT '{}'::jsonb
 );
 
--- 2. Categories Table
-CREATE TABLE public.categories (
+-- 2. Categories Table: Groups events (e.g., 'Sports', 'Academic')
+CREATE TABLE IF NOT EXISTS public.categories (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   name TEXT NOT NULL
 );
 
--- 3. Events Table
-CREATE TABLE public.events (
+-- 3. Events Table: Individual fee-collection events
+CREATE TABLE IF NOT EXISTS public.events (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   name TEXT NOT NULL,
   category_id UUID REFERENCES public.categories(id) ON DELETE SET NULL,
@@ -126,8 +126,8 @@ CREATE TABLE public.events (
   amount_per_student NUMERIC DEFAULT 0
 );
 
--- 4. Transactions Table
-CREATE TABLE public.transactions (
+-- 4. Transactions Table: Records payments made by students
+CREATE TABLE IF NOT EXISTS public.transactions (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   student_id UUID REFERENCES public.students(id) ON DELETE CASCADE,
   amount NUMERIC NOT NULL,
@@ -136,14 +136,16 @@ CREATE TABLE public.transactions (
   payment_method TEXT DEFAULT 'Cash'
 );
 
--- 5. App Settings Table
-CREATE TABLE public.app_settings (
+-- 5. App Settings Table: Global configuration
+CREATE TABLE IF NOT EXISTS public.app_settings (
   id INTEGER PRIMARY KEY,
   total_goal NUMERIC DEFAULT 0
 );
 
--- Insert default settings row
-INSERT INTO public.app_settings (id, total_goal) VALUES (1, 0);
+-- Initialize default settings (only if not already present)
+INSERT INTO public.app_settings (id, total_goal) 
+VALUES (1, 0)
+ON CONFLICT (id) DO NOTHING;
 ```
 
 ### Row Level Security (RLS)
@@ -151,7 +153,7 @@ INSERT INTO public.app_settings (id, total_goal) VALUES (1, 0);
 
 ---
 
-## 🔐 Authentication & Roles
+## Authentication & Roles
 
 The application uses Supabase Google OAuth. Access is strictly controlled via the `Auth.tsx` component.
 
@@ -163,7 +165,7 @@ To modify admin access, update the `adminEmails` array in `/src/components/Auth.
 
 ---
 
-## 📶 Offline Synchronization Architecture
+## Offline Synchronization Architecture
 
 The app is designed to work flawlessly in environments with poor or no internet connectivity.
 
